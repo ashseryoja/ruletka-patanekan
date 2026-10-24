@@ -279,7 +279,7 @@
   };
   const renderStats = () => {
     const left = pool().length;
-    $("#stats").innerHTML = `Մասնակիցներ՝ <b>${S.count}</b> · Խաղարկված՝ <b>${S.history.length}</b> · Մնաց՝ <b>${left}</b>`;
+    $("#countVal").textContent = S.count; $("#stDrawn").textContent = S.history.length; $("#stLeft").textContent = left;
     $("#panelStats").innerHTML = `Թվերը՝ <b>${lo()}</b>–<b>${hi()}</b><br>Բացառված՝ <b>${countExcluded()}</b> · Խաղարկված՝ <b>${S.history.length}</b> · Մնաց՝ <b>${left}</b>`;
     const pz = $("#prize");
     pz.hidden = !S.prize; pz.textContent = S.prize;
@@ -297,8 +297,31 @@
     const last = S.history[S.history.length - 1];
     cur = last && last.n >= lo() && last.n <= hi() ? valToFrac(last.n) : 0;
     buildStatic(); buildDyn(); renderStats(); save();
+    // a number typed here wins over an old ?n= / ?from= in the address, also after a reload
+    try { const u = new URL(location.href); if (u.searchParams.has("n") || u.searchParams.has("from")) { u.searchParams.delete("n"); u.searchParams.delete("from"); history.replaceState(null, "", u); } } catch { /* ignore */ }
   };
-  const setPanelLock = (on) => { document.querySelectorAll("#panel input, #panel button:not(#panelClose)").forEach((x) => (x.disabled = on)); };
+  // inline count editor on the main screen
+  const countBtn = $("#countBtn"), countEdit = $("#countEdit");
+  const openCount = () => {
+    if (spinning || !$("#win").hidden) return;
+    countEdit.value = S.count; countBtn.hidden = true; countEdit.hidden = false;
+    countEdit.focus(); countEdit.select();
+  };
+  const closeCount = (apply) => {
+    if (countEdit.hidden) return;
+    if (apply) {
+      const v = clampInt(countEdit.value, 1, MAXN, S.count);
+      if (v !== S.count) { S.count = v; inCount.value = v; rangeChanged(); toast(`Մասնակիցներ՝ ${v}`); }
+    }
+    countEdit.hidden = true; countBtn.hidden = false;
+  };
+  countBtn.addEventListener("click", openCount);
+  countEdit.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); closeCount(true); }
+    else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); closeCount(false); }
+  });
+  countEdit.addEventListener("blur", () => closeCount(true));
+  const setPanelLock = (on) => { document.querySelectorAll("#panel input, #panel button:not(#panelClose), #countBtn").forEach((x) => (x.disabled = on)); };
 
   inCount.addEventListener("change", () => { S.count = clampInt(inCount.value, 1, MAXN, S.count); inCount.value = S.count; rangeChanged(); });
   inCount.addEventListener("input", () => { const v = Number(inCount.value); if (Number.isInteger(v) && v >= 1 && v <= MAXN) { S.count = v; rangeChanged(); } });
@@ -345,6 +368,7 @@
     if (e.key === " " || e.key === "Enter") { e.preventDefault(); if (!$("#win").hidden) closeWin(); else spin(); }
     else if (e.key === "f" || e.key === "F" || e.key === "ֆ") fullscreen();
     else if (e.key === "s" || e.key === "S" || e.key === "ս") ($("#panel").hidden ? openPanel() : closePanel());
+    else if (e.key === "n" || e.key === "N" || e.key === "ն") { e.preventDefault(); openCount(); }
   });
 
   // ---------------------------------------------------------------- toast

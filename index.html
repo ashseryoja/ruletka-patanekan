@@ -36,7 +36,15 @@
 
       <div id="controls">
         <button id="spin" type="button"><span>ՊՏՏԵԼ</span></button>
-        <div id="stats"></div>
+        <div id="stats">
+          <span>Մասնակիցներ՝</span>
+          <button id="countBtn" type="button" title="Փոխել մասնակիցների քանակը (N)" aria-label="Փոխել մասնակիցների քանակը">
+            <b id="countVal">500</b>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" /></svg>
+          </button>
+          <input id="countEdit" type="number" min="1" max="100000" step="1" inputmode="numeric" aria-label="Մասնակիցների քանակը" hidden />
+          <span>· Խաղարկված՝ <b id="stDrawn">0</b> · Մնաց՝ <b id="stLeft">500</b></span>
+        </div>
       </div>
 
       <section id="history" aria-label="Հաղթողներ"></section>
@@ -116,7 +124,7 @@
       </div>
 
       <p class="keys">
-        <b>Space</b> / <b>Enter</b> — պտտել · <b>F</b> — ամբողջ էկրան · <b>S</b> — կարգավորումներ · <b>Esc</b> — փակել
+        <b>Space</b> / <b>Enter</b> — պտտել · <b>N</b> — մասնակիցների քանակը · <b>F</b> — ամբողջ էկրան · <b>S</b> — կարգավորումներ · <b>Esc</b> — փակել
       </p>
     </aside>
 

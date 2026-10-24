@@ -95,7 +95,29 @@ body.spinning #gaugeBox { animation: shake 0.11s linear infinite; }
   background: repeating-linear-gradient(90deg, rgba(20, 20, 20, 0.55) 0 calc(var(--u) * 1.6), transparent 0 calc(var(--u) * 2.6));
   border-radius: 2px;
 }
-#stats { font-size: calc(var(--u) * 1.6); color: rgba(255, 255, 255, 0.92); text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8); white-space: nowrap; }
+#stats { display: flex; align-items: center; gap: calc(var(--u) * 0.55); font-size: calc(var(--u) * 1.6); color: rgba(255, 255, 255, 0.92); text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8); white-space: nowrap; }
+/* the participant count: click it to type a new number */
+#countBtn {
+  display: inline-flex; align-items: center; gap: calc(var(--u) * 0.4);
+  padding: calc(var(--u) * 0.2) calc(var(--u) * 0.75) calc(var(--u) * 0.25);
+  border-radius: calc(var(--u) * 0.6); border: calc(var(--u) * 0.15) dashed rgba(255, 194, 58, 0.8);
+  background: rgba(0, 0, 0, 0.4); color: var(--gold); font-weight: 900; font-size: 1.15em; text-shadow: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+#countBtn[hidden], #countEdit[hidden] { display: none; }
+#countBtn b { color: inherit; }
+#countBtn svg { width: 0.95em; height: 0.95em; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+#countBtn:hover:not(:disabled) { background: var(--orange); color: var(--ink); border-color: var(--orange); }
+#countBtn:disabled { cursor: default; }
+body.idle #countBtn, body.spinning #countBtn { border-color: transparent; background: transparent; }
+body.idle #countBtn svg, body.spinning #countBtn svg { display: none; }
+#countEdit {
+  width: calc(var(--u) * 8); padding: calc(var(--u) * 0.2) calc(var(--u) * 0.5);
+  font: inherit; font-weight: 900; font-size: 1.15em; text-align: center; color: var(--yellow);
+  background: rgba(10, 10, 10, 0.9); border: calc(var(--u) * 0.15) solid var(--orange); border-radius: calc(var(--u) * 0.6);
+  outline: none; box-shadow: 0 0 calc(var(--u) * 1.2) rgba(255, 138, 26, 0.6); user-select: text;
+}
+#countEdit::-webkit-inner-spin-button { opacity: 1; }
 #stats b { color: var(--gold); }
 
 /* ---------- history (last winners) ---------- */
