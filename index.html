@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="hy">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Խաղարկություն · Մինչև վերջ</title>
+    <meta name="description" content="Մրցանակների խաղարկություն՝ պատահական թիվ սպիդոմետրի վրա։" />
+    <meta name="theme-color" content="#1b1b1b" />
+    <link rel="icon" type="image/png" href="assets/icon.png" />
+    <link rel="preload" href="assets/fonts/Montserratarm-Black.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="assets/bg.webp" as="image" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="bg" aria-hidden="true">
+      <div class="glow g1"></div>
+      <div class="glow g2"></div>
+      <div class="glow g3"></div>
+    </div>
+
+    <main id="stage">
+      <header id="head">
+        <img id="logo" src="assets/logo.webp" alt="Մինչև վերջ" />
+        <div id="titles">
+          <h1 id="title">ԽԱՂԱՐԿՈՒԹՅՈՒՆ</h1>
+          <div id="prize" hidden></div>
+        </div>
+      </header>
+
+      <section id="gaugeWrap" aria-live="polite">
+        <div id="gaugeBox">
+          <svg id="gStatic" viewBox="0 0 1000 1000" aria-hidden="true"></svg>
+          <svg id="gDyn" viewBox="0 0 1000 1000" role="img" aria-label="Սպիդոմետր"></svg>
+        </div>
+      </section>
+
+      <div id="controls">
+        <button id="spin" type="button"><span>ՊՏՏԵԼ</span></button>
+        <div id="stats"></div>
+      </div>
+
+      <section id="history" aria-label="Հաղթողներ"></section>
+    </main>
+
+    <!-- operator buttons (hide when the mouse is idle) -->
+    <div id="tools">
+      <button id="btnFull" type="button" title="Ամբողջ էկրան (F)" aria-label="Ամբողջ էկրան">
+        <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>
+      </button>
+      <button id="btnSettings" type="button" title="Կարգավորումներ (S)" aria-label="Կարգավորումներ">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" /><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" /></svg>
+      </button>
+    </div>
+
+    <!-- settings -->
+    <aside id="panel" hidden>
+      <div class="panelHead">
+        <h2>Կարգավորումներ</h2>
+        <button id="panelClose" type="button" aria-label="Փակել">✕</button>
+      </div>
+
+      <label class="field">
+        <span>Մասնակիցների քանակը</span>
+        <div class="stepper">
+          <button type="button" data-step="-10">−10</button>
+          <button type="button" data-step="-1">−1</button>
+          <input id="inCount" type="number" min="1" max="100000" step="1" inputmode="numeric" />
+          <button type="button" data-step="1">+1</button>
+          <button type="button" data-step="10">+10</button>
+        </div>
+      </label>
+
+      <div class="row2">
+        <label class="field">
+          <span>Առաջին համարը</span>
+          <input id="inFrom" type="number" min="0" max="99999" step="1" inputmode="numeric" />
+        </label>
+        <label class="field">
+          <span>Վերջին համարը</span>
+          <input id="inTo" type="number" readonly tabindex="-1" />
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Մրցանակ (ցույց է տրվում վերնագրի տակ)</span>
+        <input id="inPrize" type="text" maxlength="60" placeholder="օր․՝ Գլխավոր մրցանակ" />
+      </label>
+
+      <label class="field">
+        <span>Բացառել թվերը</span>
+        <input id="inExclude" type="text" placeholder="օր․՝ 7, 13, 20-25" />
+      </label>
+
+      <label class="check">
+        <input id="inNoRepeat" type="checkbox" />
+        <span>Չկրկնել արդեն դուրս եկած թվերը</span>
+      </label>
+
+      <label class="field">
+        <span>Պտտման տևողությունը՝ <b id="durVal"></b> վրկ</span>
+        <input id="inDur" type="range" min="4" max="16" step="1" />
+      </label>
+
+      <label class="check">
+        <input id="inSound" type="checkbox" />
+        <span>Ձայն</span>
+      </label>
+
+      <div class="panelStats" id="panelStats"></div>
+
+      <div class="hist" id="histFull"></div>
+
+      <div class="panelBtns">
+        <button id="btnUndo" type="button">Չեղարկել վերջինը</button>
+        <button id="btnClear" type="button" class="danger">Մաքրել պատմությունը</button>
+      </div>
+
+      <p class="keys">
+        <b>Space</b> / <b>Enter</b> — պտտել · <b>F</b> — ամբողջ էկրան · <b>S</b> — կարգավորումներ · <b>Esc</b> — փակել
+      </p>
+    </aside>
+
+    <!-- winner -->
+    <div id="win" hidden>
+      <div class="winCard">
+        <div class="winLabel">ՀԱՂԹՈՂ ԹԻՎ</div>
+        <div class="winNum" id="winNum">0</div>
+        <div class="winPrize" id="winPrize"></div>
+        <button id="winNext" type="button">ՇԱՐՈՒՆԱԿԵԼ</button>
+      </div>
+    </div>
+
+    <div id="toast" role="status" hidden></div>
+    <canvas id="confetti" aria-hidden="true"></canvas>
+
+    <script src="app.js"></script>
+  </body>
+</html>
